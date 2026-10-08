@@ -1,0 +1,334 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+
+  <meta
+    name="viewport"
+    content="width=device-width, initial-scale=1.0"
+  >
+
+  <title>Customer Registration</title>
+
+  <style>
+
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      font-family: Arial, sans-serif;
+    }
+
+    body {
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      padding: 20px;
+      background: #f4f6f8;
+    }
+
+    .container {
+      width: 100%;
+      max-width: 500px;
+      background: white;
+      padding: 35px;
+      border-radius: 18px;
+      box-shadow: 0 10px 35px rgba(0,0,0,0.08);
+    }
+
+    .title {
+      text-align: center;
+      margin-bottom: 8px;
+      font-size: 28px;
+      color: #111827;
+    }
+
+    .subtitle {
+      text-align: center;
+      margin-bottom: 28px;
+      color: #6b7280;
+      font-size: 14px;
+    }
+
+    .form-group {
+      margin-bottom: 18px;
+    }
+
+    label {
+      display: block;
+      margin-bottom: 7px;
+      font-size: 14px;
+      font-weight: 600;
+      color: #374151;
+    }
+
+    input,
+    textarea {
+      width: 100%;
+      padding: 13px 14px;
+      border: 1px solid #d1d5db;
+      border-radius: 10px;
+      outline: none;
+      font-size: 15px;
+      transition: 0.2s;
+    }
+
+    textarea {
+      min-height: 100px;
+      resize: vertical;
+    }
+
+    input:focus,
+    textarea:focus {
+      border-color: #2563eb;
+      box-shadow: 0 0 0 3px rgba(37,99,235,0.1);
+    }
+
+    button {
+      width: 100%;
+      border: none;
+      padding: 14px;
+      border-radius: 10px;
+      background: #2563eb;
+      color: white;
+      font-size: 16px;
+      font-weight: 600;
+      cursor: pointer;
+      transition: 0.2s;
+    }
+
+    button:hover {
+      background: #1d4ed8;
+    }
+
+    button:disabled {
+      opacity: 0.7;
+      cursor: not-allowed;
+    }
+
+    #message {
+      margin-top: 18px;
+      text-align: center;
+      font-size: 14px;
+      font-weight: 600;
+    }
+
+    .success {
+      color: #15803d;
+    }
+
+    .error {
+      color: #dc2626;
+    }
+
+    @media (max-width: 500px) {
+
+      .container {
+        padding: 25px 20px;
+      }
+
+      .title {
+        font-size: 24px;
+      }
+
+    }
+
+  </style>
+</head>
+
+<body>
+
+  <div class="container">
+
+    <h1 class="title">
+      Customer Registration
+    </h1>
+
+    <p class="subtitle">
+      Please fill in your information
+    </p>
+
+    <form id="customerForm">
+
+      <div class="form-group">
+
+        <label for="name">
+          Full Name *
+        </label>
+
+        <input
+          type="text"
+          id="name"
+          placeholder="Enter your full name"
+          required
+        >
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="address">
+          Address *
+        </label>
+
+        <textarea
+          id="address"
+          placeholder="Enter your address"
+          required
+        ></textarea>
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="contact">
+          Contact Number *
+        </label>
+
+        <input
+          type="tel"
+          id="contact"
+          placeholder="98XXXXXXXX"
+          pattern="[0-9]{10}"
+          maxlength="10"
+          required
+        >
+
+      </div>
+
+      <div class="form-group">
+
+        <label for="email">
+          Email
+        </label>
+
+        <input
+          type="email"
+          id="email"
+          placeholder="example@gmail.com"
+        >
+
+      </div>
+
+      <button
+        type="submit"
+        id="submitBtn"
+      >
+        Submit Form
+      </button>
+
+    </form>
+
+    <div id="message"></div>
+
+  </div>
+
+
+  <script>
+
+    /*
+      IMPORTANT:
+      Replace this URL with your
+      Google Apps Script Web App URL.
+    */
+
+    const SCRIPT_URL =
+      "PASTE_YOUR_GOOGLE_APPS_SCRIPT_URL_HERE";
+
+
+    const form =
+      document.getElementById("customerForm");
+
+    const button =
+      document.getElementById("submitBtn");
+
+    const message =
+      document.getElementById("message");
+
+
+    form.addEventListener(
+      "submit",
+      async function(event) {
+
+        event.preventDefault();
+
+
+        button.disabled = true;
+
+        button.textContent =
+          "Submitting...";
+
+        message.textContent = "";
+
+        message.className = "";
+
+
+        const data = {
+
+          name:
+            document.getElementById("name").value.trim(),
+
+          address:
+            document.getElementById("address").value.trim(),
+
+          contact:
+            document.getElementById("contact").value.trim(),
+
+          email:
+            document.getElementById("email").value.trim()
+
+        };
+
+
+        try {
+
+          await fetch(
+            SCRIPT_URL,
+            {
+              method: "POST",
+
+              mode: "no-cors",
+
+              body: JSON.stringify(data)
+            }
+          );
+
+
+          message.textContent =
+            "✓ Your information has been submitted successfully.";
+
+          message.className =
+            "success";
+
+
+          form.reset();
+
+
+        } catch (error) {
+
+          console.error(error);
+
+
+          message.textContent =
+            "✕ Something went wrong. Please try again.";
+
+          message.className =
+            "error";
+
+        }
+
+
+        button.disabled = false;
+
+        button.textContent =
+          "Submit Form";
+
+      }
+
+    );
+
+  </script>
+
+</body>
+</html>
